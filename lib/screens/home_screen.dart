@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
    
@@ -6,9 +7,19 @@ class HomeScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
-         child: Text('HomeScreen'),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Center(child: Text('Productos')),
+      ),
+      body: ListView.builder( // ListView.builder crea los widget justo cuando esten cerca de entrar a mostralo en pantalla para evitar saturar el sistema, es mas eficiente
+        itemCount: 10,
+        itemBuilder: (BuildContext context, int index) => ProductCard()
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: const Icon(Icons.add),
+        onPressed: () {
+        
+        },
       ),
     );
   }

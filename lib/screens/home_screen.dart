@@ -23,10 +23,10 @@ class HomeScreen extends StatelessWidget {
         title: const Center(child: Text('Productos')),
       ),
       body: ListView.builder( // ListView.builder crea los widget justo cuando esten cerca de entrar a mostralo en pantalla para evitar saturar el sistema, es mas eficiente
-        itemCount: 10,
+        itemCount: productsService.products.length,
         itemBuilder: (BuildContext context, int index) => GestureDetector(
           onTap: () => Navigator.pushNamed(context, 'product'),
-          child: ProductCard(products: productsService.products)
+          child: ProductCard(product: productsService.products[index])
         )
       ),
       floatingActionButton: FloatingActionButton(

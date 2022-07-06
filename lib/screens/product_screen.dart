@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/Ui/input_decorations.dart';
+import 'package:productos_app/services/products_service.dart';
 import 'package:productos_app/widgets/widgets.dart';
+import 'package:provider/provider.dart';
 
 class ProductScreen extends StatelessWidget {
    
@@ -8,6 +10,10 @@ class ProductScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
+
+    // para obtener acceso al provider
+    final productsService = Provider.of<ProductsService>(context);
+
     return Scaffold(
       body: SingleChildScrollView( // SingleChildScrollView es para que se haga scroll si el elemento es mas grande que la pantalla
         child: Column(
@@ -15,7 +21,7 @@ class ProductScreen extends StatelessWidget {
             Stack(
               children: [
 
-                const ProductImage(),
+                ProductImage(url: productsService.selectedProduct!.picture),
 
                 Positioned(
                   top: 60,

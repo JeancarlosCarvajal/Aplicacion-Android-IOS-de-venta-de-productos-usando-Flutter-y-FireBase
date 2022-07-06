@@ -25,7 +25,11 @@ class HomeScreen extends StatelessWidget {
       body: ListView.builder( // ListView.builder crea los widget justo cuando esten cerca de entrar a mostralo en pantalla para evitar saturar el sistema, es mas eficiente
         itemCount: productsService.products.length,
         itemBuilder: (BuildContext context, int index) => GestureDetector(
-          onTap: () => Navigator.pushNamed(context, 'product'),
+          onTap: () {
+            // asignamos los valores del producto seleccionado a selected product par aenviarlo por Provider
+            productsService.selectedProduct = productsService.products[index].copy();
+            Navigator.pushNamed(context, 'product');
+          },
           child: ProductCard(product: productsService.products[index])
         )
       ),

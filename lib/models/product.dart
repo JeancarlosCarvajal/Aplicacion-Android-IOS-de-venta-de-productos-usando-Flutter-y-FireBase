@@ -38,4 +38,16 @@ class Product {
         "picture": picture,
         "price": price,
     };
+
+
+    // creamos un nuevo metodo para ser usado para pasar un producto como referencia y ser leido en la pagina de modificar
+    // se hace una copia del modelo y lo hace independiente del Product original
+    Product copy() => Product(
+      available: this.available,
+      name: this.name,
+      picture: this.picture,
+      price: this.price,
+      id: this.id,
+    );
+    
 }

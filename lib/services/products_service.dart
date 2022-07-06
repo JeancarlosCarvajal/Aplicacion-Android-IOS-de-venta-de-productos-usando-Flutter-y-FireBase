@@ -10,7 +10,12 @@ import 'package:http/http.dart' as http;
 class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con el provider
 
   final String _baseUrl = 'flutter-varios-4355d-default-rtdb.firebaseio.com';
+
+  // para ser usado y agregarle mas productos a esta lista desd ela base de datos
   final List<Product> products = [];
+
+  // se va llenar con la informacion del producto seleccionado de la lista de productos
+  Product? selectedProduct;
 
   // Propiedad para saber cuando estoy cargando y cuando no
   bool isLoadinng = true;

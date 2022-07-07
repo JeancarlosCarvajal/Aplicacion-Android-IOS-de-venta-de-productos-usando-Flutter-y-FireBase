@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:productos_app/models/models.dart';
 import 'package:productos_app/screens/screens.dart';
 import 'package:productos_app/services/products_service.dart';
 import 'package:productos_app/services/services.dart';
@@ -34,10 +35,19 @@ class HomeScreen extends StatelessWidget {
         )
       ),
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.add),
+        elevation: 10,
+        backgroundColor: Colors.green,
         onPressed: () {
-        
+          // creamos un nuevo producto para poder tener uns instancia de producto la cual usaremos en la pantalla de 'product'
+          productsService.selectedProduct = Product( // le quite el new a Product... tenia 'new Product'
+            available: false, 
+            name: '', 
+            price: 0
+          );
+          // vamos ahora a la pantalla de producto donde ya tenemos la instancia de product creada pero con valores vacios lo cual vamos a llenar porque es nuevo
+          Navigator.pushNamed(context, 'product');
         },
+        child: const Icon(Icons.add),
       ),
     );
   }

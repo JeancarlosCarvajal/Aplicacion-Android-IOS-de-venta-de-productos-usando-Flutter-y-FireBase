@@ -20,13 +20,16 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
   // Propiedad para saber cuando estoy cargando y cuando no
   bool isLoadinng = true;
 
+  // saber si estan guandando la informacion
+  bool isSaving = false;
+
   // CUando la instancia de ProductService sea llamada voy a llamar este metodo
   // esto es el constructor fjate tiene el mismo nombre de la clase
   ProductsService() {
     this.loadProductos();
   }
 
-  // TODO Regresar <List<Product>> .... Cargar los productos ...
+  // <List<Product>> .... Cargar los productos ...
   Future loadProductos() async {
 
     // setear cuanndo empiza a cargar
@@ -60,12 +63,99 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     // Notifica que ya cargo
     // setear cuanndo empiza a cargar
     this.isLoadinng = false;
+    // notifica a los widgets cobre el cambio
     notifyListeners();
 
     return this.products;
   }
 
 
+  // Guardar o crear productos
+  Future saveOrCreateProduct(Product product) async {
+
+    // setea el valor en true de gardando o creando
+    isSaving = true;
+    // notifica a los widgets
+    notifyListeners();
+
+    // Aqui la Logica
+    if(product.id == null){
+      // Creacion... si no tengo id es porque voy a crear un producto
+      await this.createProduct(product);
+    }else{
+      // Actualizacion... si tengo el id entonces voy a actualizar el producto
+      await this.updateProduct(product);
+    }
+
+    // setea a true el valor de guardando ya sea guardar o crear nuevo
+    isSaving = true;
+    // Actualiza todos los widgets
+    notifyListeners();
+    
+
+  }
+
+  // peticion al Back End
+  Future<String> updateProduct(Product product) async {
+
+    
+    // peticion http
+    final url = Uri.https(_baseUrl, 'products/${product.id}.json');
+
+    // aqui esta la respuesta y se le hace un put() para actualizar
+    final resp = await http.put( url, body: product.toJson() );
+
+    // decodificando la respuesta
+    final decodedData = resp.body;
+
+    print(decodedData);
+
+    // TODO Actualizar el listado de productos para que se vea las modificaciones con notifyListener()
+    // Implementacion N 1... forma moderna de implementarlo
+    final index = this.products.indexWhere((element) => element.id == product.id); // funcionn que busca el indice de un producto segun una condicional
+    this.products[index] = product; // igualamos el producto de la lista al producto actualizado
+
+    // Implementacion N 2... Otra forma de implementarlo
+    // for (var i = 0; i < products.length; i++) {
+    //   if(product.id == products[i].id){
+    //     print('Lo encontre: ${products[i].id} == ${product.id}');
+    //     products[i] = product;
+    //   }
+    // }
+
+    // actualizamos todos los widgets en la funcion de saveOrCreateProduct
+
+    return product.id!;
+  }
+
+
+// peticion al Back End
+  Future<String> createProduct(Product product) async {
+
+    
+    // peticion http
+    final url = Uri.https(_baseUrl, 'products/.json');
+
+    // aqui esta la respuesta y se le hace un put() para actualizar
+    final resp = await http.post( url, body: product.toJson() );
+
+    // decodificando la respuesta, viene en jason dedemos decodificarlo
+    final decodedData =  jsonDecode(resp.body);
+
+    // me regresa {"name":"-N6Of2wcabl3rOzOgLAd"} el cual es el id del producto que me genera el propio FireBase de manera automatica
+    // El id asignado por FireBse es Unico se puede dejar asi 
+    print(decodedData); 
+
+    // Agregamos el id devuelto por fireBase al producto creado
+    product.id = decodedData['name'];
+
+    // Agregamos el producto de la lista al productos
+    this.products.add(product);
+
+    // actualizamos todos los widgets en la funcion de saveOrCreateProduct
+
+    return product.id!;
+  }
 
 
 } 

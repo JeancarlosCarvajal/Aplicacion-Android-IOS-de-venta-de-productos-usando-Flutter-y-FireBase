@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:productos_app/Ui/input_decorations.dart';
 import 'package:productos_app/providers/product_form_provider.dart';
 import 'package:productos_app/services/products_service.dart';
@@ -35,8 +36,12 @@ class _ProductScreenBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+    final productForm = Provider.of<ProductFormProvider>(context);
+
     return Scaffold(
       body: SingleChildScrollView( // SingleChildScrollView es para que se haga scroll si el elemento es mas grande que la pantalla
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag, // esconde el teclado al hacer scroll
         child: Column(
           children: [
             Stack(
@@ -59,7 +64,6 @@ class _ProductScreenBody extends StatelessWidget {
                   child: IconButton(
                     onPressed: () {
                       // TODO camara o galeria
-
                     }, 
                     icon: const Icon(Icons.camera_alt_outlined, size: 40, color: Colors.white)
                   )
@@ -82,9 +86,14 @@ class _ProductScreenBody extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
 
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.save_outlined),
-        onPressed: (){
-          // TODO guardar producto en la base de datos FireBase
+        child: const Icon(Icons.save_outlined),
+        onPressed: () async{
+          // si el formulario no es valido no hagas nada
+          if(!productForm.isValidForm()) return;
+
+          // en caso que siii sea valido el formulario, estamos enviando toda la informacion del producto contenida en el formulacio adentro de la
+          // funcion  saveOrCreateProduct
+          await productsService.saveOrCreateProduct(productForm.product);
         },
       ),
 
@@ -113,6 +122,10 @@ class _ProductForm extends StatelessWidget {
         // height: 200,
         decoration: _buildBoxDecoration(),
         child: Form(
+          // relaciona la llave de este formulario con el provider en product_form_provider.dart
+          key: productForm.formKey,
+          // Para que autovalide cuando se haga interaccion el usuario
+          autovalidateMode: AutovalidateMode.onUserInteraction,
           child: Column(
             children: [
               const SizedBox(height: 10),
@@ -138,6 +151,11 @@ class _ProductForm extends StatelessWidget {
               
               TextFormField(
                 initialValue: '\$${product.price}',
+                // darle formato a los inputs
+                inputFormatters: [
+                   // valido numeros un puto y solo dos decimales. importar el paquete de flutter_services.dart
+                  FilteringTextInputFormatter.allow(RegExp(r'^(\d+)?\.?\d{0,2}')),
+                ],
                 onChanged: (value) {
                   // si el valor no se puede parsear a double entonces el precio es cero
                   if(double.tryParse(value) == null){
@@ -163,12 +181,12 @@ class _ProductForm extends StatelessWidget {
 
               SwitchListTile.adaptive(
                 value: product.available, 
-                title: Text('Disponible'),
+                title: const Text('Disponible'),
                 activeColor: Colors.indigo,
-                onChanged: (value){
-                  // TODO Pendiente cambiar estado
-
-                }
+                onChanged: productForm.updateAvailability // tambien funciona asi  
+                // onChanged: (value){ // tambien funciona asi
+                //   productForm.updateAvailability(value);
+                // }
               ),
 
               const SizedBox(height: 30),

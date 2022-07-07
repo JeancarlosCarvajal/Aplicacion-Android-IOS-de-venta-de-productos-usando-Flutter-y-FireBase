@@ -1,4 +1,5 @@
 // peticiones http post get etc
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'dart:convert'; // para usar json
@@ -16,6 +17,9 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
 
   // se va llenar con la informacion del producto seleccionado de la lista de productos
   Product? selectedProduct;
+
+  // creamos una propiedad opcional para la imagen que sleccionamemos si queremos modificar o crear
+  File? newPictureFile;
 
   // Propiedad para saber cuando estoy cargando y cuando no
   bool isLoadinng = true;
@@ -155,6 +159,18 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     // actualizamos todos los widgets en la funcion de saveOrCreateProduct
 
     return product.id!;
+  }
+
+  // Metodo creado Para imprimir la imagen previa en el widget de modificar o crear imagen
+  void updateSelectedProductImage( String path ) {
+
+    // para establecer la imagen de fondo en el widget
+    this.selectedProduct!.picture = path;
+
+    // al usar este metodo se guarda el archivo File en la variable newPictureFile para ser usada  en cualquier momento con Provider
+    // este File es el que enviaremos mediante el motodo Post al servidor de imgenes con la Api Rest
+    this.newPictureFile = File.fromUri(Uri(path: path));
+    notifyListeners();
   }
 
 

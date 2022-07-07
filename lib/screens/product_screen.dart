@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:productos_app/Ui/input_decorations.dart';
 import 'package:productos_app/providers/product_form_provider.dart';
@@ -62,8 +63,26 @@ class _ProductScreenBody extends StatelessWidget {
                   top: 60,
                   right: 20,
                   child: IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // TODO camara o galeria
+                      // creamos la instacia de la imagen
+                      final picker = new ImagePicker();
+                      final XFile? pickedFile = await picker.pickImage(
+                        // source: ImageSource.gallery,
+                        source: ImageSource.camera,
+                        imageQuality: 100
+                      );
+                      if(pickedFile == null){
+                        print('No selecciono NADA');
+                        return;
+                      }
+                      // pickedFile.path contiene la imagen en el dispositivo fisico
+                      print('Sii tengo Alguna Imagen: ${pickedFile.path}');
+
+                      // Usamos el motodo para previsualizar la imagen en el widget y para
+                      // Guardar la imagen en un File en una propiedad llamada newPictureImage
+                      productsService.updateSelectedProductImage(pickedFile.path);
+                      
                     }, 
                     icon: const Icon(Icons.camera_alt_outlined, size: 40, color: Colors.white)
                   )

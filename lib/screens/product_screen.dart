@@ -70,6 +70,7 @@ class _ProductScreenBody extends StatelessWidget {
                       final XFile? pickedFile = await picker.pickImage(
                         // source: ImageSource.gallery,
                         source: ImageSource.camera,
+                        // calidad de la imagen que se tomara o seleccionara
                         imageQuality: 100
                       );
                       if(pickedFile == null){
@@ -94,7 +95,7 @@ class _ProductScreenBody extends StatelessWidget {
 
             _ProductForm(),
 
-            SizedBox(height: 100), // le da un poco mas de espacio a la persona para trabajar
+            const SizedBox(height: 100), // le da un poco mas de espacio a la persona para trabajar
 
 
           ],
@@ -105,10 +106,22 @@ class _ProductScreenBody extends StatelessWidget {
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
 
       floatingActionButton: FloatingActionButton(
-        child: const Icon(Icons.save_outlined),
-        onPressed: () async{
+        child: productsService.isSaving 
+        ? const CircularProgressIndicator(color: Colors.white) // en caso que este cargando muestrame el cargando circular
+        : const Icon(Icons.save_outlined),
+        onPressed: productsService.isSaving 
+        ? null // en caso que este cargando es decir isSaving en true entonces desabilita el boton para que no le aplique otra vez
+        : () async{ // en caso contrario entonces aplica la funcion de guardar
           // si el formulario no es valido no hagas nada
           if(!productForm.isValidForm()) return;
+
+          // subimos la imagen con el metodo creado en productsService
+          final String? imageUrl = await productsService.uploadImage();
+
+          // null safety, para asignar el nnuevo valor de la url al valor de la imagen del formulario
+          if(imageUrl != null) productForm.product.picture = imageUrl;
+
+          print(imageUrl);
 
           // en caso que siii sea valido el formulario, estamos enviando toda la informacion del producto contenida en el formulacio adentro de la
           // funcion  saveOrCreateProduct
@@ -222,11 +235,11 @@ class _ProductForm extends StatelessWidget {
 
   BoxDecoration _buildBoxDecoration() => BoxDecoration(
     color: Colors.white,
-    borderRadius: BorderRadius.only(bottomRight: Radius.circular(25), bottomLeft: Radius.circular(25)),
+    borderRadius: const BorderRadius.only(bottomRight: Radius.circular(25), bottomLeft: Radius.circular(25)),
     boxShadow: [
       BoxShadow(
         color: Colors.black.withOpacity(0.05),
-        offset: Offset(0, 5),
+        offset: const Offset(0, 5),
         blurRadius: 5
       )
     ]

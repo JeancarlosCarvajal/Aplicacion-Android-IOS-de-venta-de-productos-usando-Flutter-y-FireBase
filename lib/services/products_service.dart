@@ -92,7 +92,7 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     }
 
     // setea a true el valor de guardando ya sea guardar o crear nuevo
-    isSaving = true;
+    isSaving = false;
     // Actualiza todos los widgets
     notifyListeners();
     
@@ -140,7 +140,7 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     // peticion http
     final url = Uri.https(_baseUrl, 'products/.json');
 
-    // aqui esta la respuesta y se le hace un put() para actualizar
+    // aqui esta la respuesta y se le hace un post() para actualizar
     final resp = await http.post( url, body: product.toJson() );
 
     // decodificando la respuesta, viene en jason dedemos decodificarlo
@@ -171,6 +171,52 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     // este File es el que enviaremos mediante el motodo Post al servidor de imgenes con la Api Rest
     this.newPictureFile = File.fromUri(Uri(path: path));
     notifyListeners();
+  }
+
+  // metodo para determinar si quiero modificar la imagen para enviarla al servidor de Cloudinary
+  Future<String?> uploadImage() async {
+
+    // si no imagen este valor es nulo y retorno null
+    if(this.newPictureFile == null) return null;
+
+    // notificar a los wigets que estoy salvando imagenes
+    this.isSaving = true;
+    notifyListeners();
+
+    // creamos la uri
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/dy9ewvl37/image/upload?upload_preset=rwoupote');
+
+    // todo... Creamos la peticion
+    // creando el request. es multipart porque voy a enviar datos file usando post
+    final imageUploadRequest = http.MultipartRequest('POST', url);
+
+    // todo... Adjuntamos el archivo file para la peticion
+    // ahora adjuntamos el archivo al request, esta es toda la peticion
+    final file = await http.MultipartFile.fromPath('file', newPictureFile!.path);
+
+    // todo... Agregamos el archivo adjunnto a la peticion
+    // aignamos el valor file al request
+    imageUploadRequest.files.add(file);
+
+    // todo... Disparamos la peticion
+    final stremResponse = await imageUploadRequest.send();
+    final resp = await http.Response.fromStream(stremResponse);
+
+    // en caso de la respuesta en no sea 200. sea mala
+    if(resp.statusCode != 200 && resp.statusCode != 201){
+      print('Algo salio mal');
+      print(resp.body);
+      return null;
+    }
+
+    // Indicar que ya subi la imagen y vamos a limpiar esta propiedad
+    this.newPictureFile = null;
+
+    final decodedData = json.decode(resp.body);
+    // print(resp.body);
+
+    // retorna el url con certificado SSL
+    return decodedData['secure_url'];
   }
 
 

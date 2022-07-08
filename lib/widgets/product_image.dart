@@ -22,12 +22,12 @@ class ProductImage extends StatelessWidget {
         child: Opacity( // esta opacidad var permitir ver el color detras, el color especificado en decoration:
           opacity: 0.9,
           child: ClipRRect(
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(45), topRight: Radius.circular(45)),
-              child: getImage( url ),
-            ),
+            borderRadius: const BorderRadius.only(topLeft: Radius.circular(45), topRight: Radius.circular(45)),
+            child: getImage( url ),
           ),
         ),
-      );
+      ),
+    );
   }
 
   BoxDecoration _buildBoxDecoration() => BoxDecoration(

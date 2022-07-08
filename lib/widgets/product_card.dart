@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/models.dart';
 
@@ -188,17 +190,28 @@ class _BackGroundImage extends StatelessWidget {
         width: double.infinity,
         height: 400,
         // color: Colors.red,
-        child: url == null || url == '' 
-          ? const Image(
-              image: AssetImage('assets/no-image.png'),
-              fit: BoxFit.cover,
-            )
-          : FadeInImage(
-            placeholder: const AssetImage('assets/jar-loading.gif'), 
-            image: NetworkImage(url!),
-            fit: BoxFit.cover, // esto hace que se haga zoom a la imagen a tal punto que se encaje en el cuadro de la imagen disppnible en el widget
-        ),
+        child: getImage(url)
       ),
+    );
+  }
+
+  Widget getImage(String? picture) {
+    if(picture == null){
+      return const Image(
+        image: AssetImage('assets/no-image.png'),
+        fit: BoxFit.cover
+      );
+    }
+    if(picture.startsWith('http')){
+      return FadeInImage(
+        placeholder: const AssetImage('assets/jar-loading.gif'), 
+        image: NetworkImage(picture),
+        fit: BoxFit.cover
+      );
+    }
+    return Image.file(
+      File(picture),
+      fit: BoxFit.cover,    
     );
   }
 }

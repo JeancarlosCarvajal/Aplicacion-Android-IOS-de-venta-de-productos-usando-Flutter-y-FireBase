@@ -54,7 +54,12 @@ class _ProductScreenBody extends StatelessWidget {
                   top: 60,
                   left: 20,
                   child: IconButton(
-                    onPressed: () => Navigator.of(context).pop(), // Navigator.of(context).pop() me devuelve atras de donde estaba
+                    onPressed: () {
+                      // al darle hacia atras me limpie el valor de newPicture en caso que el cliente halla tomado la foto pero se arrepienta
+                      productsService.newPictureFile = null;
+                      // luego navega a la pantalla de atras
+                      Navigator.of(context).pop();
+                    }, // Navigator.of(context).pop() me devuelve atras de donde estaba
                     icon: const Icon(Icons.arrow_back_ios_new, size: 40, color: Colors.white)
                   )
                 ),
@@ -68,8 +73,8 @@ class _ProductScreenBody extends StatelessWidget {
                       // creamos la instacia de la imagen
                       final picker = new ImagePicker();
                       final XFile? pickedFile = await picker.pickImage(
-                        // source: ImageSource.gallery,
-                        source: ImageSource.camera,
+                        source: ImageSource.gallery,
+                        // source: ImageSource.camera,
                         // calidad de la imagen que se tomara o seleccionara
                         imageQuality: 100
                       );

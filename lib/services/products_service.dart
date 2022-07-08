@@ -167,6 +167,7 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     // para establecer la imagen de fondo en el widget
     this.selectedProduct!.picture = path;
 
+    // TODO Pendiente aqui esta asignando valor a newPictureFile pero que tal si el cliente se arrepiente de Guardar
     // al usar este metodo se guarda el archivo File en la variable newPictureFile para ser usada  en cualquier momento con Provider
     // este File es el que enviaremos mediante el motodo Post al servidor de imgenes con la Api Rest
     this.newPictureFile = File.fromUri(Uri(path: path));

@@ -5,9 +5,9 @@ import 'package:provider/provider.dart';
 import 'package:productos_app/Ui/input_decorations.dart';
 import 'package:productos_app/widgets/widgets.dart';
 
-class LoginScreen extends StatelessWidget {
+class RegisterScreen extends StatelessWidget {
    
-  const LoginScreen({Key? key}) : super(key: key);
+  const RegisterScreen({Key? key}) : super(key: key);
   
   @override
   Widget build(BuildContext context) {
@@ -22,34 +22,31 @@ class LoginScreen extends StatelessWidget {
               CardContainer(
                 child: Column(
                   children: [
-
                     const SizedBox(height: 10),
-
-                    Text('Login', style: Theme.of(context).textTheme.headline4),
-
+                    Text('Register', style: Theme.of(context).textTheme.headline4),
                     const SizedBox(height: 30),
 
                     // Crea una instancia de LoginFormProvider que redibuja los widget cuando sean necesarios
                     // vivira en el login form en el scope
                     ChangeNotifierProvider(
                       create: (_) => new LoginFormProvider(),
-                      child: const _LoginForm(),
+                      child: const _RegisterForm(),
                     ), 
 
                   ],
                 ),
               ),
 
-              const SizedBox(height: 50), 
+              const SizedBox(height: 50),
 
               TextButton(
-                onPressed: () => Navigator.pushReplacementNamed(context, 'register'),
+                onPressed: () => Navigator.pushReplacementNamed(context, 'login'),
                 style: ButtonStyle(
                   overlayColor: MaterialStateProperty.all(Colors.indigo.withOpacity(0.1)),
                   shape: MaterialStateProperty.all(const StadiumBorder()),
                   backgroundColor: MaterialStateProperty.all(Colors.blue[600])
                 ), 
-                child: const Text('Crear una nueva Cuenta', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                child: const Text('Ya tienes una cuenta?', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
               ),
 
               const SizedBox(height: 50),
@@ -62,9 +59,9 @@ class LoginScreen extends StatelessWidget {
   }
 }
 
-class _LoginForm extends StatelessWidget {
+class _RegisterForm extends StatelessWidget {
  
-  const _LoginForm({Key? key}) : super(key: key);
+  const _RegisterForm({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +118,6 @@ class _LoginForm extends StatelessWidget {
               elevation: 0,
               color: Colors.deepPurple,
               onPressed: loginForm.isLoading ? null : () async {
-                
                 // desabilitamos el boton
                 FocusScope.of(context).unfocus();
 
@@ -139,7 +135,7 @@ class _LoginForm extends StatelessWidget {
                 // await Future.delayed(Duration(seconds: 2));
  
                 // validar si el login es correcto. falta. Validacion real con FireBase autenticator
-                final String? errorMessage = await authService.login(loginForm.email, loginForm.password);
+                final String? errorMessage = await authService.createUser(loginForm.email, loginForm.password);
 
                 if(errorMessage == null) {
                   Navigator.pushReplacementNamed(context, 'home');
@@ -157,7 +153,7 @@ class _LoginForm extends StatelessWidget {
                 child: Text(
                   loginForm.isLoading
                   ? 'Espere'
-                  : 'Ingresar',
+                  : 'Enviar',
                   style: const TextStyle(color: Colors.white),
                 ),
               )

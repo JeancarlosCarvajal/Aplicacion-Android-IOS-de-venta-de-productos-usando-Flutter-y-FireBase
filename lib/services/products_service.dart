@@ -6,6 +6,7 @@ import 'dart:convert'; // para usar json
 
 import 'package:productos_app/models/models.dart';
 import 'package:http/http.dart' as http;
+import '/tokens/tokens.dart';
 
 
 class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con el provider
@@ -185,7 +186,7 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     notifyListeners();
 
     // creamos la uri
-    final url = Uri.parse('https://api.cloudinary.com/v1_1/dy9ewvl37/image/upload?upload_preset=rwoupote');
+    final url = Uri.parse('https://api.cloudinary.com/v1_1/${Tokens.tokenCloudinary}');
 
     // todo... Creamos la peticion
     // creando el request. es multipart porque voy a enviar datos file usando post

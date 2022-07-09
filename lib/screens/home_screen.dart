@@ -17,11 +17,21 @@ class HomeScreen extends StatelessWidget {
     // leer los datos de la api de productos llamando al provider
     final productsService = Provider.of<ProductsService>(context);
 
+    // para acceder a las autorizaciones y los tokensde sesion
+    final authService = Provider.of<AuthService>(context, listen: false);
+
     if(productsService.isLoadinng) return const LoadingScreen();
 
     return Scaffold(
       appBar: AppBar(
         title: const Center(child: Text('Productos')),
+        leading: IconButton(
+          icon: const Icon(Icons.login_outlined),
+          onPressed: () {
+            authService.logout();
+            Navigator.pushReplacementNamed(context, 'login');
+          }, 
+      ),
       ),
       body: ListView.builder( // ListView.builder crea los widget justo cuando esten cerca de entrar a mostralo en pantalla para evitar saturar el sistema, es mas eficiente
         itemCount: productsService.products.length,

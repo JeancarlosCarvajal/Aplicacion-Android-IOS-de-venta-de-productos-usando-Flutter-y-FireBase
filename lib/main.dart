@@ -28,14 +28,21 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Productos App',
-      initialRoute: 'login',
+      initialRoute: 'checking',
       routes: {
-        'login'   : (_) => const LoginScreen(),
-        'register': (_) => const RegisterScreen(),
-        'home'    : (_) => const HomeScreen(),
-        'product' : (_) => const ProductScreen()
-
+        // Pantalla de esoere
+        'checking' : (_) => const CheckAuthScreen(),
+        // Pantallas principales
+        'home'     : (_) => const HomeScreen(),
+        'product'  : (_) => const ProductScreen(),
+        // Autenticacion 
+        'login'    : (_) => const LoginScreen(),
+        'register' : (_) => const RegisterScreen(),
       },
+      // al hacer esto en cualquier lado de la aplicacion usando los metodos y propiedades estaticas de NotificationsService
+      // se tiene acceso a este scaffold MaterialApp
+      // el messengerKey sirve para mostrar los mensajes en cualquier lugar
+      scaffoldMessengerKey: NotificationsService.messengerKey,
       theme: ThemeData.light().copyWith(
         scaffoldBackgroundColor: Colors.grey[300],
         appBarTheme: const AppBarTheme(

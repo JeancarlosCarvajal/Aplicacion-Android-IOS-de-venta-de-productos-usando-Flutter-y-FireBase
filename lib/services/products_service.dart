@@ -1,11 +1,12 @@
 // peticiones http post get etc
 import 'dart:io';
-
-import 'package:flutter/material.dart';
 import 'dart:convert'; // para usar json
 
-import 'package:productos_app/models/models.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
+
+import 'package:productos_app/models/models.dart';
 import '/tokens/tokens.dart';
 
 
@@ -18,6 +19,9 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
 
   // se va llenar con la informacion del producto seleccionado de la lista de productos
   Product? selectedProduct;
+
+  // storage, ya la podemos usar en cualquier parte de la aplicacion
+  final storage = new FlutterSecureStorage();
 
   // creamos una propiedad opcional para la imagen que sleccionamemos si queremos modificar o crear
   File? newPictureFile;
@@ -42,7 +46,9 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     notifyListeners();
 
     // peticion http
-    final url = Uri.https(_baseUrl, 'products.json');
+    final url = Uri.https(_baseUrl, 'products.json', {
+      'auth':  await storage.read(key: 'token') ?? '', //
+    });
 
     // aqui esta la respuesta
     final resp = await http.get( url );
@@ -105,7 +111,9 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
 
     
     // peticion http
-    final url = Uri.https(_baseUrl, 'products/${product.id}.json');
+    final url = Uri.https(_baseUrl, 'products/${product.id}.json', {
+      'auth':  await storage.read(key: 'token') ?? '', //
+    });
 
     // aqui esta la respuesta y se le hace un put() para actualizar
     final resp = await http.put( url, body: product.toJson() );
@@ -139,7 +147,9 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
 
     
     // peticion http
-    final url = Uri.https(_baseUrl, 'products/.json');
+    final url = Uri.https(_baseUrl, 'products/.json', {
+      'auth':  await storage.read(key: 'token') ?? '', //
+    });
 
     // aqui esta la respuesta y se le hace un post() para actualizar
     final resp = await http.post( url, body: product.toJson() );

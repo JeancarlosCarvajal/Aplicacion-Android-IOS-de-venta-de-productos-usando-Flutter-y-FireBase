@@ -137,12 +137,14 @@ class _RegisterForm extends StatelessWidget {
                 // validar si el login es correcto. falta. Validacion real con FireBase autenticator
                 final String? errorMessage = await authService.createUser(loginForm.email, loginForm.password);
 
-                if(errorMessage == null) {
+                if(errorMessage == '') {
                   Navigator.pushReplacementNamed(context, 'home');
                   // aqui se mantiene el boton desabilitado
                 }else{
                   // TODO mostrar error en pantalla
                   print(errorMessage);
+                  // me coloca un mensaje en el footer de la aplicacion en cualquier lado donde se llame esta clase y metod estatico
+                  NotificationsService.showSnapbar(errorMessage!);
                   // si la peticion http es recibida entonces cargamos como false el getter indicando que recibimos la respuesta y habiliatamos el boton optra vez
                   loginForm.isLoading = false;
                 }

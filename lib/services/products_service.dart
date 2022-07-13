@@ -1,6 +1,8 @@
 // peticiones http post get etc
 import 'dart:io';
+// import 'dart:html';
 import 'dart:convert'; // para usar json
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -178,7 +180,7 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     // para establecer la imagen de fondo en el widget
     this.selectedProduct!.picture = path;
 
-    // TODO Pendiente aqui esta asignando valor a newPictureFile pero que tal si el cliente se arrepiente de Guardar
+    // Pendiente aqui esta asignando valor a newPictureFile pero que tal si el cliente se arrepiente de Guardar
     // al usar este metodo se guarda el archivo File en la variable newPictureFile para ser usada  en cualquier momento con Provider
     // este File es el que enviaremos mediante el motodo Post al servidor de imgenes con la Api Rest
     this.newPictureFile = File.fromUri(Uri(path: path));
@@ -202,9 +204,20 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     // creando el request. es multipart porque voy a enviar datos file usando post
     final imageUploadRequest = http.MultipartRequest('POST', url);
 
+    // ... Convert path image to String
+    // File fileImg = File(newPictureFile!.path);
+
+    // Uint8List imgbytes = await fileImg.readAsBytes();
+    //OR
+    // Uint8List imgbytes1 = fileImg.readAsBytesSync(); 
+    // Uint8List bytes = fileImg.readAsBytesSync();
+    // String base64Image = base64Encode(bytes);
+    // print(base64Image);
+
     // todo... Adjuntamos el archivo file para la peticion
     // ahora adjuntamos el archivo al request, esta es toda la peticion
-    final file = await http.MultipartFile.fromPath('file', newPictureFile!.path);
+    final file = await http.MultipartFile.fromPath('file', newPictureFile!.path); // tenia este pero no me funciona en web
+    // final file = await http.MultipartFile.fromString('file', 'image/jpg;base64,$base64Image');
 
     // todo... Agregamos el archivo adjunnto a la peticion
     // aignamos el valor file al request
@@ -225,7 +238,7 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     this.newPictureFile = null;
 
     final decodedData = json.decode(resp.body);
-    // print(resp.body);
+    print(resp.body);
 
     // retorna el url con certificado SSL
     return decodedData['secure_url'];

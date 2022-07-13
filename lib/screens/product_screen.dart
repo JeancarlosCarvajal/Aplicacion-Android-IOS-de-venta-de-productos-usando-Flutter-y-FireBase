@@ -73,8 +73,8 @@ class _ProductScreenBody extends StatelessWidget {
                       // creamos la instacia de la imagen
                       final picker = new ImagePicker();
                       final XFile? pickedFile = await picker.pickImage(
-                        source: ImageSource.gallery,
-                        // source: ImageSource.camera,
+                        // source: ImageSource.gallery,
+                        source: ImageSource.camera,
                         // calidad de la imagen que se tomara o seleccionara
                         imageQuality: 100
                       );

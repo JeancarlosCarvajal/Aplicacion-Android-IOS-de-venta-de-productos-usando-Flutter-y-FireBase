@@ -1,4 +1,6 @@
 
+// import 'dart:io'; 
+
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -60,5 +62,10 @@ class ProductImage extends StatelessWidget {
       File(picture),
       fit: BoxFit.cover,    
     );
+    // print('Aqui toyyy: $picture');
+    // return Image.network(
+    //   picture, 
+    //   fit: BoxFit.cover,    
+    // );
   }
 }

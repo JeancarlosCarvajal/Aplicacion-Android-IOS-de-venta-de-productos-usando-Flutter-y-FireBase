@@ -47,6 +47,8 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     this.isLoadinng = true;
     notifyListeners();
 
+    print("Soy el token desde Storage: ${await storage.read(key: 'token')}");
+
     // peticion http
     final url = Uri.https(_baseUrl, 'products.json', {
       'auth':  await storage.read(key: 'token') ?? '', //
@@ -55,8 +57,18 @@ class ProductsService extends ChangeNotifier { // ChangeNotifier para usarlo con
     // aqui esta la respuesta
     final resp = await http.get( url );
 
+    print(resp);
+
     // convertimos la respuesta a un mapa de string dinamico usando json.decode()
     final Map<String, dynamic> productsMap = json.decode( resp.body );
+
+    print(productsMap);
+
+    print('Contiene error: ${productsMap.containsKey('error')}');
+
+    if(productsMap.containsKey('error')) {
+      return this.products;
+    }
 
     // acomodar los datos pa convertirlos en un listado iterable facil
     productsMap.forEach((key, value) {

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:productos_app/models/models.dart';
 import 'package:productos_app/screens/screens.dart';
-import 'package:productos_app/services/products_service.dart';
 import 'package:productos_app/services/services.dart';
 import 'package:productos_app/widgets/widgets.dart';
 import 'package:provider/provider.dart';
@@ -21,6 +20,18 @@ class HomeScreen extends StatelessWidget {
     final authService = Provider.of<AuthService>(context, listen: false);
 
     if(productsService.isLoadinng) return const LoadingScreen();
+
+    // si productervice me devuelve error es porque el token existe en el dispositivo pero expiro
+    // por lo tanto redirecciono al loging
+    if(productsService.products.length < 1) {
+      print('Token Expiro');
+      // Navigator.of(context).pushReplacementNamed('home');
+      Navigator.pushReplacement(context, PageRouteBuilder(
+          pageBuilder: (_, __, ___) => const LoginScreen(),
+          transitionDuration: const Duration(seconds: 0)
+        )
+      ); 
+    }
 
     return Scaffold(
       appBar: AppBar(

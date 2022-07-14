@@ -93,7 +93,6 @@ class AuthService extends ChangeNotifier {
   Future<String> readToken() async {
     // Si el token no existe regresa unn string vacio
     return await storage.read(key: 'token') ?? '';
-
   }
 
 
